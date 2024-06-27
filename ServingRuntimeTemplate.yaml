@@ -1,0 +1,72 @@
+metadata:
+  name: template-gcnimf
+  namespace: redhat-ods-applications
+  uid: 09f64d50-b984-4b06-9891-33bb03376b5c
+  resourceVersion: '83952721'
+  creationTimestamp: '2024-04-25T20:01:52Z'
+  labels:
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    opendatahub.io/apiProtocol: REST
+    opendatahub.io/modelServingSupport: '["single"]'
+  managedFields:
+    - manager: unknown
+      operation: Update
+      apiVersion: template.openshift.io/v1
+      time: '2024-04-25T21:28:52Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:opendatahub.io/apiProtocol': {}
+            'f:opendatahub.io/modelServingSupport': {}
+          'f:labels':
+            .: {}
+            'f:opendatahub.io/dashboard': {}
+        'f:objects': {}
+objects:
+  - apiVersion: serving.kserve.io/v1alpha1
+    kind: ServingRuntime
+    metadata:
+      annotations:
+        openshift.io/display-name: NVIDIA Inference Microservice
+        opendatahub.io/apiProtocol: REST
+      name: nvidia-runtime-gpu
+    spec:
+      containers:
+        - name: kserve-container
+          image: 'ghcr.io/huggingface/text-generation-inference:1.4.0'
+          command:
+            - text-generation-launcher
+          args:
+            - '--model-id=/mnt/models/'
+            - '--port=3000'
+          env:
+            - name: HF_HOME
+              value: /tmp/hf_home
+            - name: HUGGINGFACE_HUB_CACHE
+              value: /tmp/hf_hub_cache
+            - name: TRANSFORMER_CACHE
+              value: /tmp/transformers_cache
+          readinessProbe:
+            exec:
+              command:
+                - curl
+                - 'localhost:3000/health'
+            initialDelaySeconds: 30
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - 'localhost:3000/health'
+            initialDelaySeconds: 30
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+      multiModel: false
+      supportedModelFormats:
+        - autoSelect: true
+          name: pytorch
+apiVersion: template.openshift.io/v1
+kind: Template
