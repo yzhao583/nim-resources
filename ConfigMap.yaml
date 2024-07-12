@@ -1,0 +1,50 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nvidia-nim-images-data
+  namespace: redhat-ods-applications
+  uid: b1fdcaaa-323d-4c9b-940c-d14802b31f4d
+  resourceVersion: '222493062'
+  creationTimestamp: '2024-06-25T21:15:55Z'
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: >
+      {"apiVersion":"v1","data":{"llama3-70b-instruct":"{\n \"name\":
+      \"llama3-70b-instruct\",\n \"displayName\": \"Llama3-70b-instruct\",\n
+      \"shortDescription\": \"NVIDIA NIM for GPU accelerated Llama 3 70B
+      inference through OpenAI compatible APIs\",\n \"namespace\":
+      \"nim/meta\",\n \"tags\": [\n \"latest\",\n \"1.0.0\"\n ],\n
+      \"latestTag\": \"1.0.0\",\n \"updatedDate\":
+      \"2024-06-12T22:45:23.712Z\"\n}","llama3-8b-instruct":"{\n \"name\":
+      \"llama3-8b-instruct\",\n \"displayName\": \"Llama3-8b-instruct\",\n
+      \"shortDescription\": \"NVIDIA NIM for GPU accelerated Llama 3 8B
+      inference through OpenAI compatible APIs\",\n \"namespace\":
+      \"nim/meta\",\n \"tags\": [\n \"latest\",\n \"1.0.0\"\n ],\n
+      \"latestTag\": \"1.0.0\",\n \"updatedDate\":
+      \"2024-06-12T22:48:00.889Z\"\n}"},"kind":"ConfigMap","metadata":{"annotations":{},"creationTimestamp":"2024-06-25T21:15:55Z","name":"nvidia-nim-images-data","namespace":"redhat-ods-applications","resourceVersion":"220589289","uid":"b1fdcaaa-323d-4c9b-940c-d14802b31f4d"}}
+data:
+  llama3-70b-instruct: |-
+    {
+     "name": "llama3-70b-instruct",
+     "displayName": "Llama3-70b-instruct",
+     "shortDescription": "NVIDIA NIM for GPU accelerated Llama 3 70B inference through OpenAI compatible APIs",
+     "namespace": "nim/meta",
+     "tags": [
+     "latest",
+     "1.0.0"
+     ],
+     "latestTag": "1.0.0",
+     "updatedDate": "2024-06-12T22:45:23.712Z"
+    }
+  llama3-8b-instruct: |-
+    {
+     "name": "llama3-8b-instruct",
+     "displayName": "Llama3-8b-instruct",
+     "shortDescription": "NVIDIA NIM for GPU accelerated Llama 3 8B inference through OpenAI compatible APIs",
+     "namespace": "nim/meta",
+     "tags": [
+     "latest",
+     "1.0.0"
+     ],
+     "latestTag": "1.0.0",
+     "updatedDate": "2024-06-12T22:48:00.889Z"
+    }

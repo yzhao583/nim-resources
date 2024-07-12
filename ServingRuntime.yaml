@@ -8,7 +8,7 @@ metadata:
     opendatahub.io/template-display-name: NVIDIA Inference Microservice
     opendatahub.io/accelerator-name: migrated-gpu
   name: yu-test-nim-deployment-1
-  namespace: yu-nim-test-project-6
+  namespace: yu-nim-test-project-1
   labels:
     opendatahub.io/dashboard: 'true'
 spec:
@@ -42,6 +42,15 @@ spec:
       ports:
         - containerPort: 3000
           protocol: TCP
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+          nvidia.com/gpu: 2
+        requests:
+          cpu: '1'
+          memory: 4Gi
+          nvidia.com/gpu: 2
       affinity: {}
       volumeMounts:
         - name: shm
@@ -50,6 +59,14 @@ spec:
   supportedModelFormats:
     - autoSelect: true
       name: pytorch
+  replicas: 1
+  tolerations:
+    - effect: NoSchedule
+      key: nvidia.com/gpu
+      operator: Exists
+    - effect: NoSchedule
+      key: odh-notebook
+      operator: Exists
   volumes:
     - name: shm
       emptyDir:
