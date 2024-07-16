@@ -1,46 +1,38 @@
 apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
+labels:
+  opendatahub.io/dashboard: 'true'
 metadata:
+  name: yu-test-nim-deployment-1
   annotations:
+    opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
     openshift.io/display-name: yu-test-nim-deployment-1
     opendatahub.io/apiProtocol: REST
     opendatahub.io/template-name: nvidia-runtime-gpu
     opendatahub.io/template-display-name: NVIDIA Inference Microservice
     opendatahub.io/accelerator-name: migrated-gpu
-  name: yu-test-nim-deployment-1
   namespace: yu-nim-test-project-1
   labels:
     opendatahub.io/dashboard: 'true'
 spec:
+  supportedModelFormats:
+    - name: nvidia-nim-mistral-7b-instruct-v03
+  protocolVersions:
+    - grpc-v2
+  multiModel: false
   containers:
-    - name: kserve-container
-      image: 'ghcr.io/huggingface/text-generation-inference:1.4.0'
-      command:
-        - text-generation-launcher
-      args:
-        - '--model-id=/mnt/models/'
-        - '--port=3000'
-      env:
-        - name: HF_HOME
-          value: /tmp/hf_home
-        - name: HUGGINGFACE_HUB_CACHE
-          value: /tmp/hf_hub_cache
-        - name: TRANSFORMER_CACHE
-          value: /tmp/transformers_cache
-      readinessProbe:
-        exec:
-          command:
-            - curl
-            - 'localhost:3000/health'
-        initialDelaySeconds: 30
-      livenessProbe:
-        exec:
-          command:
-            - curl
-            - 'localhost:3000/health'
-        initialDelaySeconds: 30
+    - env:
+        - name: NIM_CACHE_PATH
+          value: /mnt/models
+        - name: NGC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: NGC_API_KEY
+              name: nvidia-nim-secrets
+      name: kserve-container
+      image: 'nvcr.io/nim/meta/mistral-7b-instruct-v03:1.0.0'
       ports:
-        - containerPort: 3000
+        - containerPort: 8000
           protocol: TCP
       resources:
         limits:
@@ -55,10 +47,8 @@ spec:
       volumeMounts:
         - name: shm
           mountPath: /dev/shm
-  multiModel: false
-  supportedModelFormats:
-    - autoSelect: true
-      name: pytorch
+  imagePullSecrets:
+    - name: ngc-secret
   replicas: 1
   tolerations:
     - effect: NoSchedule

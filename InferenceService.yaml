@@ -2,7 +2,7 @@ apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
   name: yu-test-nim-deployment-1
-  namespace: yu-nim-test-project-6
+  namespace: yu-nim-test-project-1
   labels:
     opendatahub.io/dashboard: 'true'
   annotations:
@@ -12,23 +12,23 @@ metadata:
     sidecar.istio.io/rewriteAppHTTPProbers: 'true'
 spec:
   predictor:
-    minReplicas: 2
-    maxReplicas: 2
+    minReplicas: 3
+    maxReplicas: 3
     model:
       modelFormat:
-        name: llama3-70b-instruct
+        name: mistral-7b-instruct-v03
       runtime: yu-test-nim-deployment-1
       storage:
         key: ''
         path: ''
       resources:
         limits:
-          cpu: '8'
-          memory: 10Gi
+          cpu: '2'
+          memory: 8Gi
           nvidia.com/gpu: 2
         requests:
-          cpu: '4'
-          memory: 8Gi
+          cpu: '1'
+          memory: 4Gi
           nvidia.com/gpu: 2
     tolerations:
       - effect: NoSchedule
