@@ -1,23 +1,23 @@
 apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
-  name: yu-test-nim-deployment-1
-  namespace: yu-nim-test-project-1
+  name: yu-test-nim-deployment-4
+  namespace: yu-nim-test-project-4
   labels:
     opendatahub.io/dashboard: 'true'
   annotations:
-    openshift.io/display-name: yu-test-nim-deployment-1
+    openshift.io/display-name: yu-test-nim-deployment-4
     serving.knative.openshift.io/enablePassthrough: 'true'
     sidecar.istio.io/inject: 'true'
     sidecar.istio.io/rewriteAppHTTPProbers: 'true'
 spec:
   predictor:
-    minReplicas: 3
-    maxReplicas: 3
+    minReplicas: 2
+    maxReplicas: 2
     model:
       modelFormat:
-        name: mistral-7b-instruct-v03
-      runtime: yu-test-nim-deployment-1
+        name: mixtral-8x22b-instruct-v01
+      runtime: yu-test-nim-deployment-4
       storage:
         key: ''
         path: ''
@@ -25,11 +25,11 @@ spec:
         limits:
           cpu: '2'
           memory: 8Gi
-          nvidia.com/gpu: 2
+          nvidia.com/gpu: 1
         requests:
           cpu: '1'
           memory: 4Gi
-          nvidia.com/gpu: 2
+          nvidia.com/gpu: 1
     tolerations:
       - effect: NoSchedule
         key: nvidia.com/gpu

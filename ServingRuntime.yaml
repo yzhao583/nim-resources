@@ -3,22 +3,26 @@ kind: ServingRuntime
 labels:
   opendatahub.io/dashboard: 'true'
 metadata:
-  name: yu-test-nim-deployment-1
+  name: yu-test-nim-deployment-4
   annotations:
     opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
-    openshift.io/display-name: yu-test-nim-deployment-1
+    openshift.io/display-name: yu-test-nim-deployment-4
     opendatahub.io/apiProtocol: REST
     opendatahub.io/template-name: nvidia-runtime-gpu
     opendatahub.io/template-display-name: NVIDIA Inference Microservice
     opendatahub.io/accelerator-name: migrated-gpu
-  namespace: yu-nim-test-project-1
+  namespace: yu-nim-test-project-4
   labels:
     opendatahub.io/dashboard: 'true'
 spec:
   supportedModelFormats:
-    - name: nvidia-nim-mistral-7b-instruct-v03
+    - name: mixtral-8x22b-instruct-v01
+      version: latest
+      autoSelect: true
+      priority: 1
   protocolVersions:
     - grpc-v2
+    - v2
   multiModel: false
   containers:
     - env:
@@ -30,25 +34,35 @@ spec:
               key: NGC_API_KEY
               name: nvidia-nim-secrets
       name: kserve-container
-      image: 'nvcr.io/nim/meta/mistral-7b-instruct-v03:1.0.0'
+      image: 'nvcr.io/nim/meta/mixtral-8x22b-instruct-v01:latest'
       ports:
         - containerPort: 8000
           protocol: TCP
+      volumeMounts:
+        - mountPath: /dev/shm
+          name: dshm
+        - mountPath: /mnt/models/cache
+          name: nim-pvc
       resources:
         limits:
           cpu: '2'
           memory: 8Gi
-          nvidia.com/gpu: 2
+          nvidia.com/gpu: 1
         requests:
           cpu: '1'
           memory: 4Gi
-          nvidia.com/gpu: 2
+          nvidia.com/gpu: 1
       affinity: {}
-      volumeMounts:
-        - name: shm
-          mountPath: /dev/shm
   imagePullSecrets:
     - name: ngc-secret
+  volumes:
+    - name: nim-pvc
+      persistentVolumeClaim:
+        claimName: nim-pvc
+    - name: shm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 2Gi
   replicas: 1
   tolerations:
     - effect: NoSchedule
@@ -57,8 +71,3 @@ spec:
     - effect: NoSchedule
       key: odh-notebook
       operator: Exists
-  volumes:
-    - name: shm
-      emptyDir:
-        medium: Memory
-        sizeLimit: 2Gi
